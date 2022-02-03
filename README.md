@@ -1,6 +1,6 @@
 # Template for Java application
 
-This is a repository template for a Java application built with Gradle. This is designed to be used with the *git flow* Workflow.
+This is a template repository for a Java application built with Gradle. This is designed to be used with the *git flow* Workflow.
 
 ## Table of contents
 
@@ -17,13 +17,13 @@ This is a repository template for a Java application built with Gradle. This is 
 This template includes :
 - Executable jar generation
 - Javadoc generation
-- OS specific installers for Windows, Ubuntu, Linux with jpackage
+- OS specific installers for Windows, Ubuntu and Linux with jpackage
 
 ## GitHub Actions workflows
 
 There are two GitHub Actions workflows :
 - Develop : Build and tests on push and pull request on the *develop* branch
-- Release : Build, generate and publish the Javadoc on GitHub Pages, create release/pre-release with executable jar and installers
+- Release : Build, generate and publish the Javadoc on GitHub Pages, create release/pre-release with executable jar and installers when new tags are pushed
 
 ## Git Flow cheatsheet
 
