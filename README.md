@@ -1,6 +1,6 @@
 # Template for Java application
 
-This is a repository template for a Java application built with Gradle. This is designed to be used with the *git flow* Workflow
+This is a repository template for a Java application built with Gradle. This is designed to be used with the *git flow* Workflow.
 
 ## Gradle
 
