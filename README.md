@@ -10,14 +10,14 @@ This is a template repository for a Java application built with Gradle. This is 
   - [Initialization](#initialization)
   - [Adding a feature](#adding-a-feature)
   - [Creating a new release](#creating-a-new-release)
-  - [French cheatsheet website](#french-cheatsheet-website)
+  - [Applying a hotfix](#applying-a-hotfix)
 
 ## Gradle
 
 This template includes :
 - Executable jar generation
 - Javadoc generation
-- OS specific installers for Windows, Ubuntu and Linux with jpackage
+- OS specific installers for Windows, Ubuntu and Macos with jpackage *(Macos installers will not be generated for pre-releases with version major lower than 1)*
 
 ## GitHub Actions workflows
 
@@ -29,53 +29,40 @@ There are two GitHub Actions workflows :
 
 ### Initialization
 
-To initialise the Git Flow workflow
+- **To initialise the Git Flow workflow** : ```bash git flow init```
 
-```bash
-git flow init
-```
-**Set the version tag prefix to "*v*"**
+*Set the version tag prefix to "v"*
 
-You should now have two branches :
-- main
-- develop
+You should now have two branches : **main** and **develop**
 
 ### Adding a feature
 
-To start a feature
-```bash
-git flow feature start name_of_the_feature
-```
+- **To start a feature** : ```bash git flow feature start feature_name```
 
 A new branch will be created from the develop branch.
 
-To finish the feature and merge to the develop branch
-```bash
-git flow feature finish name_of_the_feature
-```
+- **To finish the feature and merge to the develop branch** : ```bash git flow feature finish feature_name```
+
+- **You can also push a feature to the remote repository** : ```bash git flow feature publish feature_name```
+
+- **Or pull it from the remote repository** : ```bash git flow feature pull origin feature_name```
 
 ### Creating a new release
 
-To start a new release
-```bash
-git flow release start 1.2.3
-```
+- **To start a new release** : ```bash git flow release start 1.2.3```
 
 A new branch will be created from the develop branch with the associated tag (here with the tag 1.2.3)
 
-To finish the release and merge it to both the develop and the main branch
-```bash
-git flow release finish 1.2.3
-```
+- **To finish the release and merge it to both the develop and the main branch** : ```bash git flow release finish 1.2.3```
 
-Then you can push the corresponding tag
-```bash
-git push origin --tags
-```
+- **Then you can push the corresponding tag** : ```bash git push --tags```
 
-*Before pushing the tag make sure all the local branches have been pushed*
+*Before pushing the tag make sure all the local branches have been pushed to remote*
 
-### French cheatsheet website
+## Applying a hotfix
 
-https://danielkummer.github.io/git-flow-cheatsheet/index.fr_FR.html
+- **To start a hotfix on the main branch** : ```bash git flow hotfix start 1.2.4```
 
+This will create a hotfix branch from the main branch
+
+- **Then to finish the hotfix and merge it to both the develop and main branch** : ```bash git flow hotfix finish 1.2.4```
