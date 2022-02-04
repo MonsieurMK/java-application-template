@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '17' # change to desired jdk version
           distribution: 'adopt'
 
       - name: Grant execution permission of script
@@ -32,6 +32,10 @@ jobs:
         uses: gradle/gradle-build-action@bc3340afc5e3cc44f2321809ac090d731c13c514
         with:
           arguments: build
+          
+      - name: Get Gradle project version from tag
+        id: version
+        run: echo "::set-output name=projectVersion::$(./gradlew printTagVersion -q)"
 
       - name: Generate Javadoc
         uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
@@ -68,6 +72,7 @@ jobs:
     outputs:
       release_url: ${{ steps.release.outputs.upload_url }}
       prerelease_url: ${{ steps.prerelease.outputs.upload_url}}
+      projectVersionOutput : ${{ steps.version.outputs.projectVersion }}
 
   deploy:
     name: deploy 🚀 
@@ -84,7 +89,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '17' # change to desired jdk version
           distribution: 'adopt'
 
       - name: Grant execution permission for Linux and Macos
@@ -100,6 +105,7 @@ jobs:
           arguments: build
 
       - name: Build installer with jpackage
+        if: matrix.os != 'macos-latest' || !startsWith(github.ref, 'refs/tags/v0')
         uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
         with:
           arguments: jpackage
@@ -111,8 +117,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.prerelease_url }}
-          asset_path: ./app/build/dist/javaTemplateProject_1.0.0-1_amd64.deb
-          asset_name: javaTemplateProject-1.0.0.deb
+          asset_path: ./app/build/dist/javaTemplateProject_${{ needs.build.outputs.projectVersionOutput }}-1_amd64.deb
+          asset_name: javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.deb
           asset_content_type: application/deb
 
       - name: Pre-Release for Windows
@@ -122,20 +128,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.prerelease_url }}
-          asset_path: ./app/build/dist/javaTemplateProject-1.0.0.exe
-          asset_name: javaTemplateProject-1.0.0.exe
+          asset_path: ./app/build/dist/javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.exe
+          asset_name: javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.exe
           asset_content_type: application/exe
 
-      - name: Pre-Release for MacOS
-        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/v0')
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.build.outputs.prerelease_url }}
-          asset_path: ./app/build/dist/javaTemplateProject-1.0.0.dmg
-          asset_name: javaTemplateProject-1.0.0.dmg
-          asset_content_type: application/dmg
+      # Pre-release not supported for macos, version majors lower than 1 are not supported
       
       - name: Release for Ubuntu
         if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v0') == false
@@ -144,8 +141,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.release_url }}
-          asset_path: ./app/build/dist/javaTemplateProject_1.0.0-1_amd64.deb
-          asset_name: javaTemplateProject-1.0.0.deb
+          asset_path: ./app/build/dist/javaTemplateProject_${{ needs.build.outputs.projectVersionOutput }}-1_amd64.deb
+          asset_name: javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.deb
           asset_content_type: application/deb
 
       - name: Release for Windows
@@ -155,9 +152,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.release_url }}
-          asset_path: ./app/build/dist/javaTemplateProject-1.0.0.msi
-          asset_name: javaTemplateProject-1.0.0.msi
-          asset_content_type: application/msi
+          asset_path: ./app/build/dist/javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.exe
+          asset_name: javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.exe
+          asset_content_type: application/exe
 
       - name: Release for MacOS
         if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/v0') == false
@@ -166,6 +163,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.release_url }}
-          asset_path: ./app/build/dist/javaTemplateProject-1.0.0.dmg
-          asset_name: javaTemplateProject-1.0.0.dmg
+          asset_path: ./app/build/dist/javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.dmg
+          asset_name: javaTemplateProject-${{ needs.build.outputs.projectVersionOutput }}.dmg
           asset_content_type: application/dmg
