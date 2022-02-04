@@ -10,15 +10,20 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 
+    // Java plugin for the javadoc building task
     id 'java'
 
+    // JPackage plugin
     id "org.panteleyev.jpackageplugin" version "1.3.1"
+    
+    // Plugin to get the project version from the latest git tag
+    id "com.github.gradle-git-version-calculator" version "1.1.0"
 }
 
 // Change to project name
 mainClassName = 'JavaProjectTemplate.App'
-
-version = '1.0.0' // Change to application version
+// Automatically gets the version from the latest git tag
+project.version = gitVersionCalculator.calculateVersion("v").minus(".dev").minus("+dev").replaceAll("\\+[0-9]+", "")
 
 compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
@@ -121,3 +126,14 @@ tasks.jpackage {
 }
 
 jpackage.dependsOn(jar)
+
+gitVersionCalculator {
+    prefix = "v"
+    withSnapshot = false
+}
+
+task printTagVersion {
+    doLast {
+        println(project.version)
+    }
+}
