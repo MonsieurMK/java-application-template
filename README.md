@@ -59,7 +59,7 @@ A new branch will be created from the develop branch with the associated tag (he
 
 *Before pushing the tag make sure all the local branches have been pushed to remote*
 
-## Applying a hotfix
+### Applying a hotfix
 
 - **To start a hotfix on the main branch** : ```git flow hotfix start 1.2.4```
 
